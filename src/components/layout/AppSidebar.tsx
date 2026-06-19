@@ -50,11 +50,11 @@ export function AppSidebar() {
             <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
               <FolderGit2 className="size-4" />
             </div>
-            <div className="flex flex-col gap-0.5 leading-none">
+            <div className="flex flex-col gap-0.5 leading-none group-data-[collapsible=icon]:hidden">
               <span className="font-semibold">Kanso Project</span>
               <span className="text-xs text-muted-foreground">Kanso Org</span>
             </div>
-            <ChevronsUpDown className="ml-auto size-4" />
+            <ChevronsUpDown className="ml-auto size-4 group-data-[collapsible=icon]:hidden" />
           </DropdownMenuTrigger>
           <DropdownMenuContent
             className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
@@ -88,7 +88,7 @@ export function AppSidebar() {
                 <SidebarMenuItem key={item.name}>
                   <SidebarMenuButton render={<Link to={item.href} />} isActive={location.pathname === item.href} tooltip={item.name}>
                     <item.icon />
-                    <span>{item.name}</span>
+                    <span className="group-data-[collapsible=icon]:hidden">{item.name}</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
@@ -112,11 +112,11 @@ export function AppSidebar() {
             <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-muted">
               <User2 className="size-4" />
             </div>
-            <div className="flex flex-col gap-0.5 leading-none">
+            <div className="flex flex-col gap-0.5 leading-none group-data-[collapsible=icon]:hidden">
               <span className="font-semibold">{user?.email?.split('@')[0] || "Usuario"}</span>
               <span className="text-xs text-muted-foreground">{user?.email || "usuario@ejemplo.com"}</span>
             </div>
-            <ChevronsUpDown className="ml-auto size-4" />
+            <ChevronsUpDown className="ml-auto size-4 group-data-[collapsible=icon]:hidden" />
           </DropdownMenuTrigger>
           <DropdownMenuContent
             className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
