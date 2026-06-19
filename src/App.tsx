@@ -5,8 +5,11 @@ import { MainLayout } from "./components/layout/MainLayout";
 import { Login } from "./pages/Login";
 import { Register } from "./pages/Register";
 import { Dashboard } from "./pages/Dashboard";
+import { useAuthSession } from "./hooks/useAuthSession";
 
 function App() {
+  useAuthSession();
+
   return (
     <Routes>
       <Route element={<PublicRoute />}>
