@@ -10,7 +10,7 @@ export interface User {
 
 export interface Issue {
   id: string;
-  key: string; // e.g., PROJ-101
+  key: string;
   title: string;
   type: IssueType;
   priority: IssuePriority;

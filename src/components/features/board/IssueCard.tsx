@@ -14,18 +14,17 @@ export const IssueCardContent: React.FC<IssueCardProps & { isDragging?: boolean 
 
   return (
     <div
-      className={`bg-[#1C1D24] border border-[#2A2B36] rounded-lg p-4 hover:border-[#3A3B46] transition-colors group cursor-grab relative ${isDragging ? 'shadow-2xl ring-2 ring-indigo-500/50 cursor-grabbing z-50' : ''}`}
+      className={`bg-card border border-border rounded-lg p-4 hover:border-primary/50 transition-colors group cursor-grab relative ${isDragging ? 'shadow-2xl ring-2 ring-primary/50 cursor-grabbing z-50' : ''}`}
     >
-      {/* Header Badges */}
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-2">
           {issue.type === 'story' ? (
-            <div className="flex items-center gap-1.5 px-2 py-1 rounded bg-indigo-500/10 text-indigo-400 text-xs font-medium border border-indigo-500/20">
+            <div className="flex items-center gap-1.5 px-2 py-1 rounded bg-secondary text-secondary-foreground text-xs font-medium border border-border">
               <Bookmark className="w-3.5 h-3.5" />
               User Story
             </div>
           ) : (
-            <div className="flex items-center gap-1.5 px-2 py-1 rounded bg-red-500/10 text-red-400 text-xs font-medium border border-red-500/20">
+            <div className="flex items-center gap-1.5 px-2 py-1 rounded bg-muted text-muted-foreground text-xs font-medium border border-border">
               <Bug className="w-3.5 h-3.5" />
               Bug
             </div>
@@ -34,42 +33,40 @@ export const IssueCardContent: React.FC<IssueCardProps & { isDragging?: boolean 
 
         <div className="flex items-center gap-2">
           {issue.priority === 'high' && (
-            <div className="px-2 py-1 rounded bg-orange-500/10 text-orange-400 text-xs font-medium border border-orange-500/20">
+            <div className="px-2 py-1 rounded bg-secondary text-secondary-foreground text-xs font-medium border border-border">
               High
             </div>
           )}
           {issue.priority === 'medium' && (
-            <div className="px-2 py-1 rounded bg-amber-500/10 text-amber-400 text-xs font-medium border border-amber-500/20">
+            <div className="px-2 py-1 rounded bg-muted text-muted-foreground text-xs font-medium border border-border">
               Medium
             </div>
           )}
           {issue.priority === 'low' && (
-            <div className="px-2 py-1 rounded bg-slate-500/10 text-slate-400 text-xs font-medium border border-slate-500/20">
+            <div className="px-2 py-1 rounded bg-accent text-accent-foreground text-xs font-medium border border-border">
               Low
             </div>
           )}
-          {isDone && <CheckCircle2 className="w-4 h-4 text-slate-500" />}
+          {isDone && <CheckCircle2 className="w-4 h-4 text-muted-foreground" />}
         </div>
       </div>
 
-      {/* Title & Key */}
-      <h4 className={`text-sm font-medium mb-1 ${isDone ? 'text-slate-400' : 'text-slate-200'}`}>
+      <h4 className={`text-sm font-medium mb-1 ${isDone ? 'text-muted-foreground' : 'text-foreground'}`}>
         {issue.title}
       </h4>
-      <p className="text-slate-500 text-xs font-medium">{issue.key}</p>
+      <p className="text-muted-foreground text-xs font-medium">{issue.key}</p>
 
-      {/* Subtasks */}
       {issue.subtasksTotal !== undefined && issue.subtasksTotal > 0 && (
         <div className="mt-4">
-          <div className="flex items-center justify-between text-xs text-slate-400 mb-2 font-medium">
+          <div className="flex items-center justify-between text-xs text-muted-foreground mb-2 font-medium">
             <span>Subtasks</span>
             <span>
               {issue.subtasksCompleted || 0}/{issue.subtasksTotal}
             </span>
           </div>
-          <div className="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
+          <div className="h-1.5 w-full bg-secondary rounded-full overflow-hidden">
             <div
-              className="h-full bg-indigo-500 rounded-full transition-all"
+              className="h-full bg-primary rounded-full transition-all"
               style={{
                 width: `${((issue.subtasksCompleted || 0) / issue.subtasksTotal) * 100}%`,
               }}
@@ -78,25 +75,24 @@ export const IssueCardContent: React.FC<IssueCardProps & { isDragging?: boolean 
         </div>
       )}
 
-      {/* Footer */}
       <div className="flex items-center justify-between mt-4">
         {issue.assignee ? (
-          <div className="w-6 h-6 rounded-full border border-slate-700 overflow-hidden bg-slate-800 flex items-center justify-center">
+          <div className="w-6 h-6 rounded-full border border-border overflow-hidden bg-muted flex items-center justify-center">
             {issue.assignee.avatarUrl ? (
               <img src={issue.assignee.avatarUrl} alt={issue.assignee.name} className="w-full h-full object-cover" />
             ) : (
-              <span className="text-[10px] text-slate-300 font-medium">
+              <span className="text-[10px] text-foreground font-medium">
                 {issue.assignee.name.substring(0, 2).toUpperCase()}
               </span>
             )}
           </div>
         ) : (
-          <div className="w-6 h-6 rounded-full border border-dashed border-slate-700 flex items-center justify-center">
-             <span className="text-slate-600 text-[10px]">+1</span>
+          <div className="w-6 h-6 rounded-full border border-dashed border-border flex items-center justify-center">
+             <span className="text-muted-foreground text-[10px]">+1</span>
           </div>
         )}
 
-        <button className="text-slate-500 hover:text-slate-300 transition-colors opacity-0 group-hover:opacity-100">
+        <button className="text-muted-foreground hover:text-foreground transition-colors opacity-0 group-hover:opacity-100">
           <MoreHorizontal className="w-4 h-4" />
         </button>
       </div>

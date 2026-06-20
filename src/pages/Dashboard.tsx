@@ -1,13 +1,12 @@
 import React from 'react';
 import { BoardColumn } from '@/components/features/board/BoardColumn';
-import type { Issue } from '@/types/board';
+import type { Issue, IssueStatus } from '@/types/board';
 import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import type { DragStartEvent, DragOverEvent, DragEndEvent } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
 import { IssueCard } from '@/components/features/board/IssueCard';
 
-// Dummy data
 const MOCK_ISSUES: Issue[] = [
-  // Nuevo
   {
     id: '1',
     key: 'PROJ-101',
@@ -37,7 +36,6 @@ const MOCK_ISSUES: Issue[] = [
     status: 'new',
     position: '00003',
   },
-  // En progreso
   {
     id: '4',
     key: 'PROJ-098',
@@ -62,7 +60,6 @@ const MOCK_ISSUES: Issue[] = [
     subtasksCompleted: 1,
     assignee: { id: 'u1', name: 'Alice', avatarUrl: 'https://i.pravatar.cc/150?u=1' },
   },
-  // Hecho
   {
     id: '6',
     key: 'PROJ-001',
@@ -127,13 +124,13 @@ export const Dashboard = () => {
   const doneIssues = React.useMemo(() => issues.filter((i) => i.status === 'done'), [issues]);
   const deployedIssues = React.useMemo(() => issues.filter((i) => i.status === 'deployed'), [issues]);
 
-  const handleDragStart = (event: any) => {
+  const handleDragStart = (event: DragStartEvent) => {
     const { active } = event;
     const issue = issues.find((i) => i.id === active.id);
     if (issue) setActiveIssue(issue);
   };
 
-  const handleDragOver = (event: any) => {
+  const handleDragOver = (event: DragOverEvent) => {
     const { active, over } = event;
     if (!over) return;
 
@@ -148,7 +145,6 @@ export const Dashboard = () => {
 
     if (!isActiveIssue) return;
 
-    // Moving Issue over another Issue
     if (isActiveIssue && isOverIssue) {
       setIssues((prev) => {
         const activeIndex = prev.findIndex((t) => t.id === activeId);
@@ -168,13 +164,12 @@ export const Dashboard = () => {
       });
     }
 
-    // Moving Issue over a Column
     if (isActiveIssue && isOverColumn) {
       setIssues((prev) => {
         const activeIndex = prev.findIndex((t) => t.id === activeId);
         if (prev[activeIndex].status !== overId) {
           const newIssues = [...prev];
-          newIssues[activeIndex] = { ...newIssues[activeIndex], status: overId as any };
+          newIssues[activeIndex] = { ...newIssues[activeIndex], status: overId as IssueStatus };
           return newIssues;
         }
         return prev;
@@ -182,7 +177,7 @@ export const Dashboard = () => {
     }
   };
 
-  const handleDragEnd = (event: any) => {
+  const handleDragEnd = (event: DragEndEvent) => {
     setActiveIssue(null);
     const { active, over } = event;
     if (!over) return;
@@ -201,7 +196,6 @@ export const Dashboard = () => {
          newIssues = arrayMove(newIssues, activeIndex, overIndex);
       }
 
-      // Re-assign positions based on the current order in the array per column
       const statusMap = new Map<string, number>();
       return newIssues.map(issue => {
         const currentCount = statusMap.get(issue.status) || 0;
@@ -212,8 +206,8 @@ export const Dashboard = () => {
   };
 
   return (
-    <div className="h-full flex flex-col bg-[#14151B] p-6 overflow-hidden">
-      <div className="flex gap-6 overflow-x-auto pb-4 h-full">
+    <div className="h-full flex flex-col overflow-hidden">
+      <div className="flex gap-2 overflow-x-auto pb-4 h-full">
         <DndContext
           sensors={sensors}
           onDragStart={handleDragStart}
@@ -221,9 +215,9 @@ export const Dashboard = () => {
           onDragEnd={handleDragEnd}
         >
           <BoardColumn id="new" title="Nuevo" issues={newIssues} />
-          <BoardColumn id="in_progress" title="En progreso" issues={inProgressIssues} dotColor="bg-indigo-500" />
+          <BoardColumn id="in_progress" title="En progreso" issues={inProgressIssues} dotColor="bg-primary" />
           <BoardColumn id="done" title="Hecho" issues={doneIssues} />
-          <BoardColumn id="deployed" title="Desplegado" issues={deployedIssues} dotColor="bg-green-500" />
+          <BoardColumn id="deployed" title="Desplegado" issues={deployedIssues} dotColor="bg-foreground" />
           
           <DragOverlay>
             {activeIssue ? <IssueCard issue={activeIssue} isOverlay={true} /> : null}

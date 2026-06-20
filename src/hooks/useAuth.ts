@@ -2,18 +2,18 @@ import { useMutation } from '@tanstack/react-query';
 import { api } from '../services/api';
 import { useAuthStore } from '../store/authStore';
 import { useNavigate } from 'react-router-dom';
+import type { LoginCredentials, RegisterCredentials, AuthResponse } from '../types/auth';
 
 export const useLogin = () => {
   const loginStore = useAuthStore((state) => state.login);
   const navigate = useNavigate();
 
   return useMutation({
-    mutationFn: async (credentials: any) => {
-      const response = await api.post('/auth/login', credentials);
+    mutationFn: async (credentials: LoginCredentials) => {
+      const response = await api.post<AuthResponse>('/auth/login', credentials);
       return response.data;
     },
     onSuccess: async (data) => {
-      // after getting token, fetch user profile
       const { access_token } = data;
       
       try {
@@ -33,7 +33,7 @@ export const useRegister = () => {
   const navigate = useNavigate();
 
   return useMutation({
-    mutationFn: async (userData: any) => {
+    mutationFn: async (userData: RegisterCredentials) => {
       const response = await api.post('/auth/register', userData);
       return response.data;
     },

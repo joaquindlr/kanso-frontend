@@ -8,7 +8,7 @@ interface BoardColumnProps {
   id: string;
   title: string;
   issues: Issue[];
-  dotColor?: string; // e.g., 'bg-indigo-500'
+  dotColor?: string;
 }
 
 export const BoardColumn: React.FC<BoardColumnProps> = ({ id, title, issues, dotColor }) => {
@@ -18,22 +18,20 @@ export const BoardColumn: React.FC<BoardColumnProps> = ({ id, title, issues, dot
   });
 
   return (
-    <div className="flex flex-col flex-1 min-w-[300px] max-w-[350px]">
-      {/* Column Header */}
-      <div className="flex items-center justify-between mb-4 px-1">
+    <div className="flex flex-col flex-1 min-w-[300px] max-w-[350px] bg-muted/50 rounded-xl p-3">
+      <div className="flex items-center justify-between mb-3 px-1">
         <div className="flex items-center gap-2">
           {dotColor && <div className={`w-2 h-2 rounded-full ${dotColor}`} />}
-          <h3 className="text-slate-200 font-semibold text-sm">{title}</h3>
+          <h3 className="text-foreground font-semibold text-sm">{title}</h3>
         </div>
-        <div className="bg-[#2A2B36] text-slate-400 text-xs font-medium px-2 py-0.5 rounded-full min-w-[20px] text-center">
+        <div className="bg-secondary text-secondary-foreground text-xs font-medium px-2 py-0.5 rounded-full min-w-[20px] text-center">
           {issues.length}
         </div>
       </div>
 
-      {/* Cards Container */}
       <div 
-        ref={setNodeRef} 
-        className={`flex flex-col gap-3 min-h-[150px] rounded-lg transition-colors ${isOver ? 'bg-[#1C1D24]/50' : ''}`}
+        ref={setNodeRef}
+        className={`flex flex-col gap-3 min-h-[150px] rounded-lg transition-colors ${isOver ? 'bg-accent/50' : ''}`}
       >
         <SortableContext items={issues.map(i => i.id)} strategy={verticalListSortingStrategy}>
           {issues.map((issue) => (
@@ -41,9 +39,8 @@ export const BoardColumn: React.FC<BoardColumnProps> = ({ id, title, issues, dot
           ))}
         </SortableContext>
 
-        {/* Drop Zone Placeholder */}
         {issues.length === 0 && (
-          <div className="border-2 border-dashed border-[#2A2B36] rounded-lg p-6 flex items-center justify-center text-indigo-400/50 text-sm font-medium hover:border-indigo-500/30 hover:bg-indigo-500/5 transition-colors cursor-pointer mt-1">
+          <div className="border-2 border-dashed border-border rounded-lg p-6 flex items-center justify-center text-muted-foreground/50 text-sm font-medium hover:border-primary/30 hover:bg-primary/5 transition-colors cursor-pointer mt-1">
             Drop here
           </div>
         )}
