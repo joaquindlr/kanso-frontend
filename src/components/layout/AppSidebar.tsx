@@ -85,9 +85,11 @@ export function AppSidebar() {
               ))}
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem asChild>
-              <Link to="/proyects" className="cursor-pointer">Ver todos los proyectos</Link>
-            </DropdownMenuItem>
+            <Link to="/proyects" className="cursor-pointer block w-full">
+              <DropdownMenuItem className="cursor-pointer w-full">
+                Ver todos los proyectos
+              </DropdownMenuItem>
+            </Link>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarHeader>
