@@ -1,8 +1,15 @@
-import React from "react";
-import { Bookmark, Bug, MoreHorizontal, X } from "lucide-react";
-import type { Issue } from "@/types/board";
+import React, { useState } from "react";
+import { Bookmark, Bug, MoreHorizontal, X, Check, ChevronsUpDown, ArrowUp, Equal, ArrowDown, AlertCircle } from "lucide-react";
+import type { Issue, IssueSeverity } from "@/types/board";
 import { Sheet, SheetContent, SheetHeader } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { useEpics } from "@/hooks/useEpics";
+import { useProjectStore } from "@/store/projectStore";
+import { useUpdateIssue } from "@/hooks/useIssues";
+import { cn } from "@/lib/utils";
 
 interface IssueDetailDrawerProps {
   issue: Issue | null;
@@ -14,6 +21,18 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
   onClose,
 }) => {
   const isOpen = !!issue;
+
+  const { selectedProject } = useProjectStore();
+  const { data: epics } = useEpics(selectedProject?.id);
+  const updateIssueMutation = useUpdateIssue();
+  const [epicOpen, setEpicOpen] = useState(false);
+
+  const priorityOptions: { value: IssueSeverity; label: string; icon: React.ElementType; color: string }[] = [
+    { value: 'CRITICAL', label: 'Crítica', icon: AlertCircle, color: 'text-destructive' },
+    { value: 'HIGH', label: 'Alta', icon: ArrowUp, color: 'text-orange-500' },
+    { value: 'MEDIUM', label: 'Media', icon: Equal, color: 'text-orange-300' },
+    { value: 'LOW', label: 'Baja', icon: ArrowDown, color: 'text-indigo-400' },
+  ];
 
   const prevIssueRef = React.useRef<Issue | null>(null);
   if (issue) {
@@ -31,6 +50,23 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
       type: "STORY",
       severity: "LOW",
     } as Issue);
+
+  const handlePriorityChange = (val: string) => {
+    if (!safeIssue.id) return;
+    updateIssueMutation.mutate({
+      issueId: safeIssue.id,
+      payload: { severity: val as IssueSeverity }
+    });
+  };
+
+  const handleEpicChange = (epicId: string) => {
+    if (!safeIssue.id) return;
+    updateIssueMutation.mutate({
+      issueId: safeIssue.id,
+      payload: { epicId: epicId === 'none' ? null : epicId }
+    });
+    setEpicOpen(false);
+  };
 
   const getStatusLabel = (status: string) => {
     switch (status) {
@@ -102,55 +138,105 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
           <div className="grid grid-cols-2 gap-y-6 gap-x-8 p-4 bg-muted/30 rounded-lg border border-border">
             <div className="flex flex-col gap-2">
               <span className="text-muted-foreground text-xs font-medium uppercase tracking-wider">
-                Asignado a
+                Épica
               </span>
-              <button className="flex items-center justify-between w-full p-2 bg-background border border-border rounded hover:border-primary/50 transition-colors text-left group">
-                <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 rounded-full bg-secondary text-secondary-foreground flex items-center justify-center text-[10px] font-medium">
-                    US
-                  </div>
-                  <span className="text-foreground text-sm">Unassigned</span>
-                </div>
-              </button>
+              <Popover open={epicOpen} onOpenChange={setEpicOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    role="combobox"
+                    aria-expanded={epicOpen}
+                    className="w-full justify-between"
+                  >
+                    {safeIssue.epic ? (
+                      <div className="flex items-center gap-2 truncate">
+                        <div
+                          className="w-3 h-3 rounded-full shrink-0"
+                          style={{ backgroundColor: safeIssue.epic.color || '#3b82f6' }}
+                        />
+                        <span className="truncate">{safeIssue.epic.name}</span>
+                      </div>
+                    ) : (
+                      <span className="text-muted-foreground font-normal">Seleccionar épica...</span>
+                    )}
+                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-[300px] p-0" align="start">
+                  <Command>
+                    <CommandInput placeholder="Buscar épica..." />
+                    <CommandList>
+                      <CommandEmpty>No se encontraron épicas.</CommandEmpty>
+                      <CommandGroup>
+                        <CommandItem
+                          key="none"
+                          value="none"
+                          onSelect={() => handleEpicChange('none')}
+                        >
+                          <Check
+                            className={cn(
+                              "mr-2 h-4 w-4",
+                              !safeIssue.epic ? "opacity-100" : "opacity-0"
+                            )}
+                          />
+                          Sin épica
+                        </CommandItem>
+                        {epics?.map((epic) => (
+                          <CommandItem
+                            key={epic.id}
+                            value={epic.name}
+                            onSelect={() => handleEpicChange(epic.id)}
+                          >
+                            <Check
+                              className={cn(
+                                "mr-2 h-4 w-4",
+                                safeIssue.epic?.id === epic.id ? "opacity-100" : "opacity-0"
+                              )}
+                            />
+                            <div
+                              className="w-3 h-3 rounded-full mr-2 shrink-0"
+                              style={{ backgroundColor: epic.color || '#3b82f6' }}
+                            />
+                            <span className="truncate">{epic.name}</span>
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
             </div>
 
             <div className="flex flex-col gap-2">
               <span className="text-muted-foreground text-xs font-medium uppercase tracking-wider">
                 Prioridad
               </span>
-              <button className="flex items-center justify-between w-full p-2 bg-background border border-border rounded hover:border-primary/50 transition-colors text-left group">
-                <div className="flex items-center gap-2">
-                  <span className="text-foreground text-sm font-medium">
-                    {safeIssue.severity === "CRITICAL" && (
-                      <span className="text-destructive">Critica</span>
-                    )}
-                    {safeIssue.severity === "HIGH" && <span>Alta</span>}
-                    {safeIssue.severity === "MEDIUM" && (
-                      <span className="text-muted-foreground">Media</span>
-                    )}
-                    {safeIssue.severity === "LOW" && (
-                      <span className="text-muted-foreground">Baja</span>
-                    )}
-                  </span>
-                </div>
-              </button>
-            </div>
-
-            <div className="flex flex-col gap-2 col-span-2">
-              <span className="text-muted-foreground text-xs font-medium uppercase tracking-wider">
-                Etiquetas
-              </span>
-              <div className="flex flex-wrap gap-2">
-                <span className="inline-flex items-center px-2 py-1 rounded bg-primary/10 border border-primary/20 text-primary text-xs font-medium">
-                  Frontend
-                </span>
-                <span className="inline-flex items-center px-2 py-1 rounded bg-secondary border border-border text-secondary-foreground text-xs font-medium">
-                  Visuals
-                </span>
-                <button className="inline-flex items-center px-2 py-1 rounded bg-muted border border-border text-muted-foreground hover:text-foreground hover:border-border/80 transition-colors text-xs font-medium gap-1">
-                  + Add Label
-                </button>
-              </div>
+              <Select value={safeIssue.severity} onValueChange={handlePriorityChange}>
+                <SelectTrigger className="w-full">
+                  <div className="flex items-center gap-2">
+                    {(() => {
+                      const selected = priorityOptions.find(p => p.value === safeIssue.severity);
+                      if (!selected) return null;
+                      const Icon = selected.icon;
+                      return <Icon className={cn("w-4 h-4 shrink-0", selected.color)} />;
+                    })()}
+                    <SelectValue placeholder="Seleccionar prioridad" />
+                  </div>
+                </SelectTrigger>
+                <SelectContent>
+                  {priorityOptions.map((option) => {
+                    const Icon = option.icon;
+                    return (
+                      <SelectItem key={option.value} value={option.value}>
+                        <div className="flex items-center gap-2">
+                          <Icon className={cn("w-4 h-4", option.color)} />
+                          <span>{option.label}</span>
+                        </div>
+                      </SelectItem>
+                    );
+                  })}
+                </SelectContent>
+              </Select>
             </div>
           </div>
 

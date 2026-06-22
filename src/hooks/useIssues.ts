@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { issuesService } from '../services/issues.service';
-import type { CreateStoryPayload, MoveIssuePayload } from '../services/issues.service';
+import type { CreateStoryPayload, MoveIssuePayload, UpdateIssuePayload } from '../services/issues.service';
 
 export const useIssues = (projectId?: string) => {
   return useQuery({
@@ -26,5 +26,18 @@ export const useMoveIssue = () => {
   return useMutation({
     mutationFn: ({ issueId, payload }: { issueId: string; payload: MoveIssuePayload }) =>
       issuesService.moveIssue(issueId, payload),
+  });
+};
+
+export const useUpdateIssue = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ issueId, payload }: { issueId: string; payload: UpdateIssuePayload }) =>
+      issuesService.updateIssue(issueId, payload),
+    onSuccess: (updatedIssue) => {
+      // Invalidate queries so the board and list refresh
+      queryClient.invalidateQueries({ queryKey: ['issues'] });
+    },
   });
 };

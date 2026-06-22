@@ -12,6 +12,16 @@ export interface MoveIssuePayload {
   position?: string;
 }
 
+export interface UpdateIssuePayload {
+  title?: string;
+  detail?: string;
+  type?: 'STORY' | 'BUG';
+  severity?: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+  status?: string;
+  epicId?: string | null;
+  assigneeId?: string | null;
+}
+
 export const issuesService = {
   getIssuesByProject: async (projectId: string): Promise<Issue[]> => {
     const { data } = await api.get<Issue[]>(`/projects/${projectId}/issues`);
@@ -25,6 +35,11 @@ export const issuesService = {
 
   moveIssue: async (issueId: string, payload: MoveIssuePayload): Promise<Issue> => {
     const { data } = await api.patch<Issue>(`/issues/${issueId}/move`, payload);
+    return data;
+  },
+
+  updateIssue: async (issueId: string, payload: UpdateIssuePayload): Promise<Issue> => {
+    const { data } = await api.patch<Issue>(`/issues/${issueId}`, payload);
     return data;
   },
 };
