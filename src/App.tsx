@@ -6,6 +6,7 @@ import { Login } from "./pages/Login";
 import { Register } from "./pages/Register";
 import { Dashboard } from "./pages/Dashboard";
 import { Projects } from "./pages/Projects";
+import { Epics } from "./pages/Epics";
 import { useAuthSession } from "./hooks/useAuthSession";
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
         <Route element={<MainLayout />}>
           <Route path="/" element={<Dashboard />} />
           <Route path="/proyects" element={<Projects />} />
+          <Route path="/epics" element={<Epics />} />
           <Route path="/team" element={<div>Team view coming soon</div>} />
         </Route>
       </Route>

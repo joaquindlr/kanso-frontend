@@ -26,7 +26,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LayoutDashboard, SquareKanban, ChevronsUpDown, FolderGit2, LogOut, User2 } from "lucide-react";
+import { LayoutDashboard, SquareKanban, ChevronsUpDown, FolderGit2, LogOut, User2, Flag } from "lucide-react";
 
 export function AppSidebar() {
   const { user, logout } = useAuthStore();
@@ -43,6 +43,7 @@ export function AppSidebar() {
 
   const navigation = [
     { name: "Tablero", href: "/", icon: LayoutDashboard },
+    { name: "Epicas", href: "/epics", icon: Flag },
     { name: "Pizarra", href: "/board", icon: SquareKanban },
   ];
 

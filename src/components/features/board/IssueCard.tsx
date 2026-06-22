@@ -3,6 +3,7 @@ import { Bookmark, Bug, MoreHorizontal, CheckCircle2 } from 'lucide-react';
 import type { Issue } from '@/types/board';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { useSearchParams } from 'react-router-dom';
 
 interface IssueCardProps {
   issue: Issue;
@@ -63,7 +64,25 @@ export const IssueCardContent: React.FC<IssueCardProps & { isDragging?: boolean 
 
 
 
-      <div className="flex items-center justify-end mt-4">
+      <div className="flex items-center justify-between mt-4">
+        <div className="flex items-center">
+          {issue.epic ? (
+            <span 
+              className="text-[10px] font-semibold px-2 py-0.5 rounded-full border border-border"
+              style={issue.epic.color ? { 
+                backgroundColor: `${issue.epic.color}20`, 
+                color: issue.epic.color, 
+                borderColor: `${issue.epic.color}50` 
+              } : {}}
+            >
+              {issue.epic.name}
+            </span>
+          ) : (
+            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-muted text-muted-foreground border border-border">
+              Sin epica
+            </span>
+          )}
+        </div>
         <button className="text-muted-foreground hover:text-foreground transition-colors opacity-0 group-hover:opacity-100">
           <MoreHorizontal className="w-4 h-4" />
         </button>
@@ -86,14 +105,22 @@ export const IssueCard: React.FC<IssueCardProps> = ({ issue, isOverlay }) => {
     isDragging,
   } = useSortable({ id: issue.id, data: { type: 'Issue', issue } });
 
+  const [, setSearchParams] = useSearchParams();
+
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
     opacity: isDragging ? 0.5 : 1,
   };
 
+  const handleClick = () => {
+    if (!isDragging) {
+      setSearchParams({ issue: issue.id });
+    }
+  };
+
   return (
-    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+    <div ref={setNodeRef} style={style} {...attributes} {...listeners} onClick={handleClick}>
       <IssueCardContent issue={issue} isDragging={isDragging} />
     </div>
   );

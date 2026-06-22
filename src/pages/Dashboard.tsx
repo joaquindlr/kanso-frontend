@@ -8,6 +8,9 @@ import { IssueCard } from '@/components/features/board/IssueCard';
 import { useProjectStore } from '@/store/projectStore';
 import { useIssues, useCreateStory, useMoveIssue } from '@/hooks/useIssues';
 import { useQueryClient } from '@tanstack/react-query';
+import { useSearchParams } from 'react-router-dom';
+import { IssueDetailDrawer } from '@/components/features/board/IssueDetailDrawer';
+
 export const Dashboard = () => {
   const { selectedProject } = useProjectStore();
   const { data: serverIssues, isLoading } = useIssues(selectedProject?.id);
@@ -17,6 +20,18 @@ export const Dashboard = () => {
 
   const issues = React.useMemo(() => serverIssues || [], [serverIssues]);
   const [activeIssue, setActiveIssue] = React.useState<Issue | null>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const issueIdParam = searchParams.get('issue');
+  const selectedIssueForDrawer = React.useMemo(
+    () => issues.find(i => i.id === issueIdParam) || null,
+    [issues, issueIdParam]
+  );
+
+  const handleCloseDrawer = () => {
+    searchParams.delete('issue');
+    setSearchParams(searchParams);
+  };
 
   const setIssues = (updater: (prev: Issue[]) => Issue[]) => {
     if (!selectedProject) return;
@@ -169,6 +184,8 @@ export const Dashboard = () => {
           </DragOverlay>
         </DndContext>
       </div>
+      
+      <IssueDetailDrawer issue={selectedIssueForDrawer} onClose={handleCloseDrawer} />
     </div>
   );
 };
