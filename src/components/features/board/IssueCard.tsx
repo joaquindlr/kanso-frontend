@@ -75,7 +75,7 @@ export const IssueCardContent: React.FC<IssueCardProps & { isDragging?: boolean 
                 borderColor: `${issue.epic.color}50` 
               } : {}}
             >
-              {issue.epic.name}
+              {issue.epic.title}
             </span>
           ) : (
             <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-muted text-muted-foreground border border-border">

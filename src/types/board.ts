@@ -16,7 +16,7 @@ export interface Issue {
   type: IssueType;
   severity: IssueSeverity;
   assignee?: User;
-  epic?: { id: string; name: string; color?: string };
+  epic?: { id: string; title: string; color?: string };
   subtasksTotal?: number;
   subtasksCompleted?: number;
   status: IssueStatus;

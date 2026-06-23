@@ -154,7 +154,7 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
                           className="w-3 h-3 rounded-full shrink-0"
                           style={{ backgroundColor: safeIssue.epic.color || '#3b82f6' }}
                         />
-                        <span className="truncate">{safeIssue.epic.name}</span>
+                        <span className="truncate">{safeIssue.epic.title}</span>
                       </div>
                     ) : (
                       <span className="text-muted-foreground font-normal">Seleccionar épica...</span>
@@ -184,7 +184,7 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
                         {epics?.map((epic) => (
                           <CommandItem
                             key={epic.id}
-                            value={epic.name}
+                            value={epic.title}
                             onSelect={() => handleEpicChange(epic.id)}
                           >
                             <Check
@@ -195,9 +195,9 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
                             />
                             <div
                               className="w-3 h-3 rounded-full mr-2 shrink-0"
-                              style={{ backgroundColor: epic.color || '#3b82f6' }}
+                              style={{ backgroundColor: '#3b82f6' }}
                             />
-                            <span className="truncate">{epic.name}</span>
+                            <span className="truncate">{epic.title}</span>
                           </CommandItem>
                         ))}
                       </CommandGroup>
