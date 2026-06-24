@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuthStore } from "@/store/authStore";
 import { useProjectStore } from "@/store/projectStore";
+import { useZenModeStore } from "@/store/zenModeStore";
 import { useProjects } from "@/hooks/useProjects";
 import {
   Sidebar,
@@ -27,6 +28,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { LayoutDashboard, Presentation, ChevronsUpDown, FolderGit2, LogOut, User2, Flag } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export function AppSidebar() {
   const { user, logout } = useAuthStore();
@@ -34,6 +36,7 @@ export function AppSidebar() {
   const { isMobile } = useSidebar();
   const { data: projects = [] } = useProjects();
   const { selectedProject, setSelectedProject } = useProjectStore();
+  const { isZenMode } = useZenModeStore();
 
   useEffect(() => {
     if (!selectedProject && projects.length > 0) {
@@ -48,7 +51,7 @@ export function AppSidebar() {
   ];
 
   return (
-    <Sidebar collapsible="icon">
+    <Sidebar collapsible="icon" className={cn("transition-all duration-300 ease-in-out z-50", isZenMode && "-translate-x-full opacity-0 pointer-events-none")}>
       <SidebarHeader>
         <DropdownMenu>
           <DropdownMenuTrigger

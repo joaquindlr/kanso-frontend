@@ -1,11 +1,19 @@
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, Bell } from "lucide-react";
+import { Search, Bell, Monitor } from "lucide-react";
+import { useZenModeStore } from "@/store/zenModeStore";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
 
 export const Header = () => {
+  const { isZenMode, toggleZenMode } = useZenModeStore();
+
   return (
-    <header className="h-16 bg-background border-b border-border flex items-center justify-between px-6 shrink-0">
+    <header className={cn(
+      "absolute top-0 left-0 right-0 h-16 bg-background border-b border-border flex items-center justify-between px-6 shrink-0 transition-transform duration-300 ease-in-out z-40",
+      isZenMode ? "-translate-y-full" : "translate-y-0"
+    )}>
       <div className="flex items-center gap-4 flex-1">
         <SidebarTrigger />
 
@@ -20,6 +28,17 @@ export const Header = () => {
       </div>
 
       <div className="flex items-center gap-4 ml-auto">
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button variant="ghost" size="icon" onClick={toggleZenMode}>
+              <Monitor className="h-5 w-5 text-muted-foreground" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Modo Zen (Cmd + \ o Ctrl + .)</p>
+          </TooltipContent>
+        </Tooltip>
+
         <Button variant="ghost" size="icon" className="relative">
           <Bell className="h-5 w-5 text-muted-foreground" />
         </Button>

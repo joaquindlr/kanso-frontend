@@ -52,7 +52,7 @@ export const BoardColumn: React.FC<BoardColumnProps> = ({ id, title, issues, dot
   };
 
   return (
-    <div className="flex flex-col flex-1 min-w-[300px] max-w-[350px] bg-muted/50 rounded-xl p-3">
+    <div className="flex flex-col flex-1 min-w-[250px] bg-muted/50 rounded-xl p-3">
       <div className="flex items-center justify-between mb-3 px-1">
         <div className="flex items-center gap-2">
           {dotColor && <div className={`w-2 h-2 rounded-full ${dotColor}`} />}
