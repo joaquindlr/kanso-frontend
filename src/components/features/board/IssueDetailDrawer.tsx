@@ -46,6 +46,8 @@ import {
 import { useEpics } from "@/hooks/useEpics";
 import { useProjectStore } from "@/store/projectStore";
 import { useUpdateIssue } from "@/hooks/useIssues";
+import { useComments, useCreateComment } from "@/hooks/useComments";
+import { useAuthStore } from "@/store/authStore";
 import { cn } from "@/lib/utils";
 
 interface IssueDetailDrawerProps {
@@ -60,10 +62,13 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
   const isOpen = !!issue;
 
   const { selectedProject } = useProjectStore();
+  const { user: currentUser } = useAuthStore();
   const { data: epics } = useEpics(selectedProject?.id);
   const updateIssueMutation = useUpdateIssue();
+  const createCommentMutation = useCreateComment();
   const [epicOpen, setEpicOpen] = useState(false);
   const [isCloseDialogOpen, setIsCloseDialogOpen] = useState(false);
+  const [newCommentValue, setNewCommentValue] = useState("");
 
   const priorityOptions: {
     value: IssueSeverity;
@@ -100,8 +105,10 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
       detail: "",
     } as Issue);
 
-  const handlePriorityChange = (val: string) => {
-    if (!safeIssue.id) return;
+  const { data: comments } = useComments(safeIssue.id);
+
+  const handlePriorityChange = (val: string | null) => {
+    if (!safeIssue.id || !val) return;
     updateIssueMutation.mutate({
       issueId: safeIssue.id,
       payload: { severity: val as IssueSeverity },
@@ -174,6 +181,26 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
       default:
         return status;
     }
+  };
+
+  const handleCreateComment = () => {
+    if (!safeIssue.id || !newCommentValue.trim()) return;
+    createCommentMutation.mutate({ issueId: safeIssue.id, content: newCommentValue });
+    setNewCommentValue("");
+  };
+
+  const formatTimeAgo = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+    
+    if (diffInSeconds < 60) return "hace un momento";
+    const diffInMinutes = Math.floor(diffInSeconds / 60);
+    if (diffInMinutes < 60) return `hace ${diffInMinutes} m`;
+    const diffInHours = Math.floor(diffInMinutes / 60);
+    if (diffInHours < 24) return `hace ${diffInHours} h`;
+    const diffInDays = Math.floor(diffInHours / 24);
+    return `hace ${diffInDays} d`;
   };
 
   return (
@@ -447,42 +474,55 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
             </span>
 
             <div className="flex gap-3 mt-2">
-              <div className="w-8 h-8 rounded-full bg-secondary text-secondary-foreground flex items-center justify-center text-xs font-medium shrink-0">
-                YO
+              <div className="w-8 h-8 rounded-full bg-secondary text-secondary-foreground flex items-center justify-center text-xs font-medium shrink-0 uppercase">
+                {currentUser?.email ? currentUser.email.substring(0, 2) : "YO"}
               </div>
               <div className="flex-1 flex flex-col gap-2">
                 <textarea
                   className="w-full bg-background border border-border rounded-md p-3 text-foreground placeholder:text-muted-foreground/50 focus:border-primary focus:ring-1 focus:ring-primary outline-none resize-none text-sm transition-all"
                   placeholder="Agregar un comentario..."
                   rows={2}
+                  value={newCommentValue}
+                  onChange={(e) => setNewCommentValue(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !e.shiftKey) {
+                      e.preventDefault();
+                      handleCreateComment();
+                    }
+                  }}
                 />
                 <div className="flex justify-end gap-2">
-                  <Button variant="ghost" size="sm">
+                  <Button variant="ghost" size="sm" onClick={() => setNewCommentValue("")} disabled={!newCommentValue.trim()}>
                     Cancelar
                   </Button>
-                  <Button size="sm">Comentar</Button>
+                  <Button size="sm" onClick={handleCreateComment} disabled={!newCommentValue.trim() || createCommentMutation.isPending}>
+                    Comentar
+                  </Button>
                 </div>
               </div>
             </div>
 
-            <div className="flex gap-3 mt-4">
-              <div className="w-8 h-8 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xs font-medium shrink-0">
-                AM
-              </div>
-              <div className="flex-1 flex flex-col gap-1">
-                <div className="flex items-baseline gap-2">
-                  <span className="text-sm font-medium text-foreground">
-                    Alex Mercer
-                  </span>
-                  <span className="text-xs text-muted-foreground">
-                    hace 2 horas
-                  </span>
+            <div className="flex flex-col gap-4 mt-4">
+              {comments?.map((comment) => (
+                <div key={comment.id} className="flex gap-3">
+                  <div className="w-8 h-8 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xs font-medium shrink-0 uppercase">
+                    {comment.user?.email ? comment.user.email.substring(0, 2) : "US"}
+                  </div>
+                  <div className="flex-1 flex flex-col gap-1">
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-sm font-medium text-foreground">
+                        {comment.user?.email || "Usuario Desconocido"}
+                      </span>
+                      <span className="text-xs text-muted-foreground">
+                        {formatTimeAgo(comment.createdAt)}
+                      </span>
+                    </div>
+                    <p className="text-sm text-muted-foreground bg-muted/30 p-3 rounded-md border border-border whitespace-pre-wrap">
+                      {comment.content}
+                    </p>
+                  </div>
                 </div>
-                <p className="text-sm text-muted-foreground bg-muted/30 p-3 rounded-md border border-border">
-                  He comenzado a trabajar en esta tarea. Necesito confirmación
-                  sobre los estilos finales antes de subir el PR.
-                </p>
-              </div>
+              ))}
             </div>
           </div>
         </div>

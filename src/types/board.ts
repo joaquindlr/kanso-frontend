@@ -22,3 +22,16 @@ export interface Issue {
   status: IssueStatus;
   position: string;
 }
+
+export interface Comment {
+  id: string;
+  content: string;
+  userId: string;
+  issueId: string;
+  createdAt: string;
+  updatedAt: string;
+  user?: {
+    id: string;
+    email: string;
+  };
+}
