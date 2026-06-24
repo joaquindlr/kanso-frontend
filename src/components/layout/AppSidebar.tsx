@@ -156,7 +156,7 @@ export function AppSidebar() {
               </DropdownMenuLabel>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={logout} className="text-destructive focus:bg-destructive/10 focus:text-destructive cursor-pointer">
+            <DropdownMenuItem onClick={logout} className="text-destructive focus:bg-destructive/10 focus:text-destructive cursor-pointer font-semibold">
               <LogOut className="mr-2 size-4" />
               <span>Cerrar Sesión</span>
             </DropdownMenuItem>

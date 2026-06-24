@@ -21,11 +21,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Command,
   CommandEmpty,
@@ -54,6 +62,7 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
   const { data: epics } = useEpics(selectedProject?.id);
   const updateIssueMutation = useUpdateIssue();
   const [epicOpen, setEpicOpen] = useState(false);
+  const [isCloseDialogOpen, setIsCloseDialogOpen] = useState(false);
 
   const priorityOptions: {
     value: IssueSeverity;
@@ -141,6 +150,16 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
     }
   };
 
+  const handleCloseIssue = () => {
+    if (!safeIssue.id) return;
+    updateIssueMutation.mutate({
+      issueId: safeIssue.id,
+      payload: { status: 'CLOSED' },
+    });
+    setIsCloseDialogOpen(false);
+    onClose();
+  };
+
   const getStatusLabel = (status: string) => {
     switch (status) {
       case "NEW":
@@ -173,13 +192,29 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
             </span>
           </div>
           <div className="flex items-center gap-1 text-muted-foreground">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 text-muted-foreground hover:text-foreground"
-            >
-              <MoreHorizontal className="w-5 h-5" />
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                >
+                  <MoreHorizontal className="w-5 h-5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem>Copiar enlace al portapapeles</DropdownMenuItem>
+                <DropdownMenuItem>Mandar arriba</DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem 
+                  variant="destructive" 
+                  className="font-semibold"
+                  onClick={() => setIsCloseDialogOpen(true)}
+                >
+                  Cerrar tarjeta
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             <Button
               variant="ghost"
               size="icon"
@@ -342,7 +377,7 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
                 </button>
               )}
             </div>
-            
+
             {isEditingDetail ? (
               <div className="flex-1 flex flex-col gap-2 pt-2">
                 <textarea
@@ -355,7 +390,11 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
                   autoFocus
                 />
                 <div className="flex justify-end gap-2">
-                  <Button variant="ghost" size="sm" onClick={handleCancelEditDetail}>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleCancelEditDetail}
+                  >
                     Cancelar
                   </Button>
                   <Button size="sm" onClick={handleSaveDetail}>
@@ -366,7 +405,8 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
             ) : (
               <div className="text-muted-foreground text-sm leading-relaxed max-w-none pt-2">
                 <p className="whitespace-pre-wrap">
-                  {safeIssue.detail || "No hay descripción disponible para esta issue. Haga click en Editar para agregar detalles adicionales relevantes para el equipo."}
+                  {safeIssue.detail ||
+                    "No hay descripción disponible para esta issue. Haga click en Editar para agregar detalles adicionales relevantes para el equipo."}
                 </p>
               </div>
             )}
@@ -418,6 +458,14 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
           </div>
         </div>
       </SheetContent>
+      
+      <ConfirmationDialog
+        open={isCloseDialogOpen}
+        onOpenChange={setIsCloseDialogOpen}
+        title="¿Cerrar tarjeta?"
+        description="¿Está seguro que desea cerrar esta tarjeta?"
+        onConfirm={handleCloseIssue}
+      />
     </Sheet>
   );
 };
