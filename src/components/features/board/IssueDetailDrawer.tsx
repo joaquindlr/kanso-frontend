@@ -10,6 +10,7 @@ import {
   Equal,
   ArrowDown,
   AlertCircle,
+  ChevronDown,
 } from "lucide-react";
 import type { Issue, IssueSeverity } from "@/types/board";
 import { Sheet, SheetContent, SheetHeader } from "@/components/ui/sheet";
@@ -228,15 +229,43 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
 
         <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-8 custom-scrollbar">
           <div className="flex flex-col gap-3">
-            <div className="flex items-center gap-2">
-              {safeIssue.type === "STORY" ? (
-                <Bookmark className="w-4 h-4 text-primary" />
-              ) : (
-                <Bug className="w-4 h-4 text-primary" />
-              )}
-              <span className="text-muted-foreground text-xs font-medium uppercase tracking-wider">
-                {safeIssue.type === "STORY" ? "User Story" : "Bug"}
-              </span>
+            <div className="w-fit self-start">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <div 
+                    className="inline-flex items-center gap-2 px-2 py-1 -ml-2 rounded-md hover:bg-muted/50 cursor-pointer transition-colors group"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    {safeIssue.type === "STORY" ? (
+                      <Bookmark className="w-4 h-4 text-primary" />
+                    ) : (
+                      <Bug className="w-4 h-4 text-destructive" />
+                    )}
+                    <span className="text-muted-foreground text-xs font-medium uppercase tracking-wider">
+                      {safeIssue.type === "STORY" ? "User Story" : "Bug"}
+                    </span>
+                    <ChevronDown className="w-3 h-3 text-muted-foreground opacity-50 group-hover:opacity-100 transition-opacity" />
+                  </div>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="w-40">
+                  <DropdownMenuItem 
+                    onClick={() => updateIssueMutation.mutate({ issueId: safeIssue.id, payload: { type: 'STORY' } })}
+                    className="cursor-pointer"
+                  >
+                    <Bookmark className="w-4 h-4 text-primary mr-2" />
+                    User Story
+                    {safeIssue.type === "STORY" && <Check className="w-4 h-4 ml-auto" />}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem 
+                    onClick={() => updateIssueMutation.mutate({ issueId: safeIssue.id, payload: { type: 'BUG' } })}
+                    className="cursor-pointer"
+                  >
+                    <Bug className="w-4 h-4 text-destructive mr-2" />
+                    Bug
+                    {safeIssue.type === "BUG" && <Check className="w-4 h-4 ml-auto" />}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
             <h1 className="text-2xl font-semibold text-foreground tracking-tight leading-tight">
               {safeIssue.title}
@@ -323,7 +352,7 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
 
             <div className="flex flex-col gap-2">
               <span className="text-muted-foreground text-xs font-medium uppercase tracking-wider">
-                Prioridad
+                {safeIssue.type === "STORY" ? "Prioridad" : "Severidad"}
               </span>
               <Select
                 value={safeIssue.severity}
