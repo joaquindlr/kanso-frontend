@@ -1,11 +1,16 @@
-import { Excalidraw } from "@excalidraw/excalidraw";
+import {
+  Excalidraw,
+  type ExcalidrawInitialDataState,
+  type ExcalidrawElement,
+  type AppState,
+} from "@excalidraw/excalidraw";
 import { useRef, useEffect } from "react";
 import { useUpdateProjectWhiteboard } from "@/hooks/useProjects";
 import "@excalidraw/excalidraw/index.css";
 
 interface ProjectWhiteboardProps {
   projectId: string;
-  initialData?: any;
+  initialData?: ExcalidrawInitialDataState;
 }
 
 export const ProjectWhiteboard = ({
@@ -15,7 +20,7 @@ export const ProjectWhiteboard = ({
   const { mutate: updateWhiteboard } = useUpdateProjectWhiteboard();
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const lastSavedDataRef = useRef<string | null>(
-    initialData ? JSON.stringify(initialData) : null
+    initialData ? JSON.stringify(initialData) : null,
   );
 
   useEffect(() => {
@@ -26,7 +31,10 @@ export const ProjectWhiteboard = ({
     };
   }, []);
 
-  const handleChange = (elements: readonly any[], appState: any) => {
+  const handleChange = (
+    elements: readonly ExcalidrawElement[],
+    appState: AppState,
+  ) => {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }

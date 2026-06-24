@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { projectsService, type CreateProjectPayload } from '../services/projects.service';
+import type { ExcalidrawInitialDataState } from "@excalidraw/excalidraw";
 
 export const useProjects = () => {
   return useQuery({
@@ -23,7 +24,7 @@ export const useUpdateProjectWhiteboard = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ projectId, excalidrawData }: { projectId: string; excalidrawData: any }) => 
+    mutationFn: ({ projectId, excalidrawData }: { projectId: string; excalidrawData: ExcalidrawInitialDataState }) => 
       projectsService.updateWhiteboard(projectId, excalidrawData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['projects'] });
