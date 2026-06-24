@@ -12,7 +12,7 @@ export interface Issue {
   id: string;
   key: string;
   title: string;
-  description?: string;
+  detail?: string;
   type: IssueType;
   severity: IssueSeverity;
   assignee?: User;

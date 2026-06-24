@@ -1,11 +1,39 @@
-import React, { useState } from "react";
-import { Bookmark, Bug, MoreHorizontal, X, Check, ChevronsUpDown, ArrowUp, Equal, ArrowDown, AlertCircle } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import {
+  Bookmark,
+  Bug,
+  MoreHorizontal,
+  X,
+  Check,
+  ChevronsUpDown,
+  ArrowUp,
+  Equal,
+  ArrowDown,
+  AlertCircle,
+} from "lucide-react";
 import type { Issue, IssueSeverity } from "@/types/board";
 import { Sheet, SheetContent, SheetHeader } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
 import { useEpics } from "@/hooks/useEpics";
 import { useProjectStore } from "@/store/projectStore";
 import { useUpdateIssue } from "@/hooks/useIssues";
@@ -27,11 +55,21 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
   const updateIssueMutation = useUpdateIssue();
   const [epicOpen, setEpicOpen] = useState(false);
 
-  const priorityOptions: { value: IssueSeverity; label: string; icon: React.ElementType; color: string }[] = [
-    { value: 'CRITICAL', label: 'Crítica', icon: AlertCircle, color: 'text-destructive' },
-    { value: 'HIGH', label: 'Alta', icon: ArrowUp, color: 'text-orange-500' },
-    { value: 'MEDIUM', label: 'Media', icon: Equal, color: 'text-orange-300' },
-    { value: 'LOW', label: 'Baja', icon: ArrowDown, color: 'text-indigo-400' },
+  const priorityOptions: {
+    value: IssueSeverity;
+    label: string;
+    icon: React.ElementType;
+    color: string;
+  }[] = [
+    {
+      value: "CRITICAL",
+      label: "Crítica",
+      icon: AlertCircle,
+      color: "text-destructive",
+    },
+    { value: "HIGH", label: "Alta", icon: ArrowUp, color: "text-orange-500" },
+    { value: "MEDIUM", label: "Media", icon: Equal, color: "text-orange-300" },
+    { value: "LOW", label: "Baja", icon: ArrowDown, color: "text-indigo-400" },
   ];
 
   const prevIssueRef = React.useRef<Issue | null>(null);
@@ -49,13 +87,14 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
       status: "NEW",
       type: "STORY",
       severity: "LOW",
+      detail: "",
     } as Issue);
 
   const handlePriorityChange = (val: string) => {
     if (!safeIssue.id) return;
     updateIssueMutation.mutate({
       issueId: safeIssue.id,
-      payload: { severity: val as IssueSeverity }
+      payload: { severity: val as IssueSeverity },
     });
   };
 
@@ -63,9 +102,43 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
     if (!safeIssue.id) return;
     updateIssueMutation.mutate({
       issueId: safeIssue.id,
-      payload: { epicId: epicId === 'none' ? null : epicId }
+      payload: { epicId: epicId === "none" ? null : epicId },
     });
     setEpicOpen(false);
+  };
+
+  const [isEditingDetail, setIsEditingDetail] = useState(false);
+  const [editDetailValue, setEditDetailValue] = useState("");
+
+  useEffect(() => {
+    setIsEditingDetail(false);
+  }, [safeIssue.id]);
+
+  const handleEditDetailClick = () => {
+    setEditDetailValue(safeIssue.detail || "");
+    setIsEditingDetail(true);
+  };
+
+  const handleSaveDetail = () => {
+    if (!safeIssue.id) return;
+    updateIssueMutation.mutate({
+      issueId: safeIssue.id,
+      payload: { detail: editDetailValue },
+    });
+    setIsEditingDetail(false);
+  };
+
+  const handleCancelEditDetail = () => {
+    setIsEditingDetail(false);
+  };
+
+  const handleDetailKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSaveDetail();
+    } else if (e.key === "Escape") {
+      handleCancelEditDetail();
+    }
   };
 
   const getStatusLabel = (status: string) => {
@@ -152,12 +225,16 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
                       <div className="flex items-center gap-2 truncate">
                         <div
                           className="w-3 h-3 rounded-full shrink-0"
-                          style={{ backgroundColor: safeIssue.epic.color || '#3b82f6' }}
+                          style={{
+                            backgroundColor: safeIssue.epic.color || "#3b82f6",
+                          }}
                         />
                         <span className="truncate">{safeIssue.epic.title}</span>
                       </div>
                     ) : (
-                      <span className="text-muted-foreground font-normal">Seleccionar épica...</span>
+                      <span className="text-muted-foreground font-normal">
+                        Seleccionar épica...
+                      </span>
                     )}
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                   </Button>
@@ -171,12 +248,12 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
                         <CommandItem
                           key="none"
                           value="none"
-                          onSelect={() => handleEpicChange('none')}
+                          onSelect={() => handleEpicChange("none")}
                         >
                           <Check
                             className={cn(
                               "mr-2 h-4 w-4",
-                              !safeIssue.epic ? "opacity-100" : "opacity-0"
+                              !safeIssue.epic ? "opacity-100" : "opacity-0",
                             )}
                           />
                           Sin épica
@@ -190,12 +267,14 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
                             <Check
                               className={cn(
                                 "mr-2 h-4 w-4",
-                                safeIssue.epic?.id === epic.id ? "opacity-100" : "opacity-0"
+                                safeIssue.epic?.id === epic.id
+                                  ? "opacity-100"
+                                  : "opacity-0",
                               )}
                             />
                             <div
                               className="w-3 h-3 rounded-full mr-2 shrink-0"
-                              style={{ backgroundColor: '#3b82f6' }}
+                              style={{ backgroundColor: "#3b82f6" }}
                             />
                             <span className="truncate">{epic.title}</span>
                           </CommandItem>
@@ -211,14 +290,23 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
               <span className="text-muted-foreground text-xs font-medium uppercase tracking-wider">
                 Prioridad
               </span>
-              <Select value={safeIssue.severity} onValueChange={handlePriorityChange}>
+              <Select
+                value={safeIssue.severity}
+                onValueChange={handlePriorityChange}
+              >
                 <SelectTrigger className="w-full">
                   <div className="flex items-center gap-2">
                     {(() => {
-                      const selected = priorityOptions.find(p => p.value === safeIssue.severity);
+                      const selected = priorityOptions.find(
+                        (p) => p.value === safeIssue.severity,
+                      );
                       if (!selected) return null;
                       const Icon = selected.icon;
-                      return <Icon className={cn("w-4 h-4 shrink-0", selected.color)} />;
+                      return (
+                        <Icon
+                          className={cn("w-4 h-4 shrink-0", selected.color)}
+                        />
+                      );
                     })()}
                     <SelectValue placeholder="Seleccionar prioridad" />
                   </div>
@@ -245,17 +333,43 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
               <span className="text-muted-foreground text-xs font-medium uppercase tracking-wider">
                 Descripción
               </span>
-              <button className="text-primary hover:text-primary/80 text-xs font-medium transition-colors">
-                Editar
-              </button>
+              {!isEditingDetail && (
+                <button
+                  onClick={handleEditDetailClick}
+                  className="text-primary hover:text-primary/80 text-xs font-medium transition-colors"
+                >
+                  Editar
+                </button>
+              )}
             </div>
-            <div className="text-muted-foreground text-sm leading-relaxed max-w-none pt-2">
-              <p>
-                No hay descripción disponible para esta issue. Haga click en
-                Editar para agregar detalles adicionales relevantes para el
-                equipo.
-              </p>
-            </div>
+            
+            {isEditingDetail ? (
+              <div className="flex-1 flex flex-col gap-2 pt-2">
+                <textarea
+                  className="w-full bg-background border border-border rounded-md p-3 text-foreground placeholder:text-muted-foreground/50 focus:border-primary focus:ring-1 focus:ring-primary outline-none resize-none text-sm transition-all"
+                  placeholder="Agregar una descripción..."
+                  rows={4}
+                  value={editDetailValue}
+                  onChange={(e) => setEditDetailValue(e.target.value)}
+                  onKeyDown={handleDetailKeyDown}
+                  autoFocus
+                />
+                <div className="flex justify-end gap-2">
+                  <Button variant="ghost" size="sm" onClick={handleCancelEditDetail}>
+                    Cancelar
+                  </Button>
+                  <Button size="sm" onClick={handleSaveDetail}>
+                    Aceptar
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <div className="text-muted-foreground text-sm leading-relaxed max-w-none pt-2">
+                <p className="whitespace-pre-wrap">
+                  {safeIssue.detail || "No hay descripción disponible para esta issue. Haga click en Editar para agregar detalles adicionales relevantes para el equipo."}
+                </p>
+              </div>
+            )}
           </div>
 
           <div className="flex flex-col gap-4 mt-2">
