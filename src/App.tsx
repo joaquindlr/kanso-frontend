@@ -8,6 +8,13 @@ import { Dashboard } from "./pages/Dashboard";
 import { Projects } from "./pages/Projects";
 import { Epics } from "./pages/Epics";
 import { useAuthSession } from "./hooks/useAuthSession";
+import { Suspense, lazy } from "react";
+
+const Whiteboard = lazy(() =>
+  import("./pages/Whiteboard").then((module) => ({
+    default: module.Whiteboard,
+  })),
+);
 
 function App() {
   useAuthSession();
@@ -24,6 +31,20 @@ function App() {
           <Route path="/" element={<Dashboard />} />
           <Route path="/proyects" element={<Projects />} />
           <Route path="/epics" element={<Epics />} />
+          <Route
+            path="/whiteboard"
+            element={
+              <Suspense
+                fallback={
+                  <div className="flex items-center justify-center h-full">
+                    Cargando pizarra...
+                  </div>
+                }
+              >
+                <Whiteboard />
+              </Suspense>
+            }
+          />
           <Route path="/team" element={<div>Team view coming soon</div>} />
         </Route>
       </Route>

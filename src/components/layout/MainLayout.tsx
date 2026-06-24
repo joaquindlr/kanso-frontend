@@ -1,8 +1,8 @@
-import { Outlet } from 'react-router-dom';
-import { AppSidebar } from './AppSidebar';
-import { Header } from './Header';
-import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
-import { TooltipProvider } from '@/components/ui/tooltip';
+import { Outlet } from "react-router-dom";
+import { AppSidebar } from "./AppSidebar";
+import { Header } from "./Header";
+import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 export const MainLayout = () => {
   return (

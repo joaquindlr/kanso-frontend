@@ -12,7 +12,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
-import { Button } from "@/components/ui/button";
 import { useUpdateIssue } from '@/hooks/useIssues';
 
 interface IssueCardProps {
@@ -107,7 +106,7 @@ export const IssueCardContent: React.FC<
           )}
         </div>
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
+          <DropdownMenuTrigger>
             <button
               className="text-muted-foreground hover:text-foreground transition-colors opacity-0 group-hover:opacity-100 outline-none"
               onPointerDown={(e) => e.stopPropagation()}

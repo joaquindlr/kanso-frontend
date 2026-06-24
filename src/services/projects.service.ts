@@ -11,6 +11,7 @@ export interface Project {
   description?: string;
   totalTasks?: number;
   completedTasks?: number;
+  excalidrawData?: any;
   createdAt: string;
   updatedAt: string;
 }
@@ -23,5 +24,8 @@ export const projectsService = {
   getAll: async (): Promise<Project[]> => {
     const { data } = await api.get<Project[]>('/projects');
     return data;
+  },
+  updateWhiteboard: async (projectId: string, excalidrawData: any): Promise<void> => {
+    await api.patch(`/projects/${projectId}/whiteboard`, { excalidrawData });
   }
 };

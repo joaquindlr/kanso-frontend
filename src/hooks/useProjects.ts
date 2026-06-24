@@ -18,3 +18,15 @@ export const useCreateProject = () => {
     },
   });
 };
+
+export const useUpdateProjectWhiteboard = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ projectId, excalidrawData }: { projectId: string; excalidrawData: any }) => 
+      projectsService.updateWhiteboard(projectId, excalidrawData),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['projects'] });
+    },
+  });
+};
