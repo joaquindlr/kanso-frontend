@@ -16,7 +16,7 @@ export const MainLayout = () => {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && (e.key === '\\' || e.key === '.')) {
+      if ((e.metaKey || e.ctrlKey) && (e.key === "\\" || e.key === ".")) {
         e.preventDefault();
         toggleZenMode();
       }
@@ -28,28 +28,41 @@ export const MainLayout = () => {
   return (
     <TooltipProvider>
       <SidebarProvider
-        style={{
-          "--sidebar-width": isZenMode ? "0px" : "16rem",
-          "--sidebar-width-icon": isZenMode ? "0px" : "4rem",
-        } as React.CSSProperties}
+        style={
+          {
+            "--sidebar-width": isZenMode ? "0px" : "16rem",
+            "--sidebar-width-icon": isZenMode ? "0px" : "4rem",
+          } as React.CSSProperties
+        }
       >
         <AppSidebar />
         <SidebarInset className="overflow-hidden relative">
           <Header />
-          <div className={cn(
-            "flex-1 overflow-y-auto text-foreground transition-[padding] duration-300 ease-in-out",
-            isWhiteboard ? "p-0" : "p-6",
-            isZenMode 
-              ? (isWhiteboard ? "pt-0" : "pt-6") 
-              : (isWhiteboard ? "pt-16" : "pt-[calc(4rem+1.5rem)]")
-          )}>
+          <div
+            className={cn(
+              "flex-1 overflow-y-auto text-foreground transition-[padding] duration-300 ease-in-out",
+              isWhiteboard ? "p-0" : "p-6",
+              isZenMode
+                ? isWhiteboard
+                  ? "pt-0"
+                  : "pt-6"
+                : isWhiteboard
+                  ? "pt-16"
+                  : "pt-[calc(4rem+1.5rem)]",
+            )}
+          >
             <Outlet />
           </div>
 
           {isZenMode && selectedProject && (
-            <div className="absolute bottom-4 right-16 pointer-events-none z-50 flex items-center gap-2 px-3 py-1.5 rounded-full bg-background/50 backdrop-blur-sm border border-border/50 text-xs font-medium text-muted-foreground shadow-sm transition-opacity duration-500 opacity-60">
-              <span className="flex h-2 w-2 rounded-full bg-primary/70"></span>
-              {selectedProject.name}
+            <div className="absolute bottom-4 right-16 pointer-events-none z-50 flex flex-col items-end gap-1.5 opacity-60 transition-opacity duration-500">
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-background/50 backdrop-blur-sm border border-border/50 text-xs font-medium text-muted-foreground shadow-sm">
+                <span className="flex h-2 w-2 rounded-full bg-primary/70"></span>
+                {selectedProject.name}
+              </div>
+              <span className="text-[10px] text-muted-foreground/70 mr-1">
+                Cmd/Ctrl + \ o . para salir del modo zen.
+              </span>
             </div>
           )}
         </SidebarInset>
