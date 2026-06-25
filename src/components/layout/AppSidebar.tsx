@@ -107,7 +107,12 @@ export function AppSidebar() {
             <SidebarMenu>
               {navigation.map((item) => (
                 <SidebarMenuItem key={item.name}>
-                  <SidebarMenuButton render={<Link to={item.href} />} isActive={location.pathname === item.href} tooltip={item.name}>
+                  <SidebarMenuButton 
+                    render={<Link to={item.href} />} 
+                    isActive={location.pathname === item.href} 
+                    tooltip={item.name}
+                    className="h-10 text-base [&>svg]:size-5"
+                  >
                     <item.icon />
                     <span className="group-data-[collapsible=icon]:hidden">{item.name}</span>
                   </SidebarMenuButton>
