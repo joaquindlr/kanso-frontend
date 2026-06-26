@@ -59,24 +59,42 @@ export const CommandPalette = () => {
             <Command.Group heading={<div className="px-2 py-1.5 text-xs font-medium text-muted-foreground">Navegación</div>}>
               <Command.Item 
                 onSelect={() => runCommand(() => navigate('/'))}
-                className="flex items-center gap-2 px-2 py-3 rounded-lg cursor-pointer aria-selected:bg-accent aria-selected:text-accent-foreground"
+                className="flex items-center justify-between px-2 py-3 rounded-lg cursor-pointer aria-selected:bg-accent aria-selected:text-accent-foreground"
               >
-                <Kanban className="w-4 h-4" />
-                <span>Ir al Tablero Kanban</span>
+                <div className="flex items-center gap-2">
+                  <Kanban className="w-4 h-4" />
+                  <span>Ir al Tablero Kanban</span>
+                </div>
+                <div className="flex gap-1">
+                  <kbd className="bg-muted px-1.5 py-0.5 rounded text-[10px] text-muted-foreground font-medium font-sans">Alt</kbd>
+                  <kbd className="bg-muted px-1.5 py-0.5 rounded text-[10px] text-muted-foreground font-medium font-sans">1</kbd>
+                </div>
               </Command.Item>
               <Command.Item 
                 onSelect={() => runCommand(() => navigate('/whiteboard'))}
-                className="flex items-center gap-2 px-2 py-3 rounded-lg cursor-pointer aria-selected:bg-accent aria-selected:text-accent-foreground"
+                className="flex items-center justify-between px-2 py-3 rounded-lg cursor-pointer aria-selected:bg-accent aria-selected:text-accent-foreground"
               >
-                <PenTool className="w-4 h-4" />
-                <span>Ir a la Pizarra (Excalidraw)</span>
+                <div className="flex items-center gap-2">
+                  <PenTool className="w-4 h-4" />
+                  <span>Ir a la Pizarra (Excalidraw)</span>
+                </div>
+                <div className="flex gap-1">
+                  <kbd className="bg-muted px-1.5 py-0.5 rounded text-[10px] text-muted-foreground font-medium font-sans">Alt</kbd>
+                  <kbd className="bg-muted px-1.5 py-0.5 rounded text-[10px] text-muted-foreground font-medium font-sans">3</kbd>
+                </div>
               </Command.Item>
               <Command.Item 
                 onSelect={() => runCommand(() => navigate('/epics'))}
-                className="flex items-center gap-2 px-2 py-3 rounded-lg cursor-pointer aria-selected:bg-accent aria-selected:text-accent-foreground"
+                className="flex items-center justify-between px-2 py-3 rounded-lg cursor-pointer aria-selected:bg-accent aria-selected:text-accent-foreground"
               >
-                <LayoutList className="w-4 h-4" />
-                <span>Ver Épicas</span>
+                <div className="flex items-center gap-2">
+                  <LayoutList className="w-4 h-4" />
+                  <span>Ver Épicas</span>
+                </div>
+                <div className="flex gap-1">
+                  <kbd className="bg-muted px-1.5 py-0.5 rounded text-[10px] text-muted-foreground font-medium font-sans">Alt</kbd>
+                  <kbd className="bg-muted px-1.5 py-0.5 rounded text-[10px] text-muted-foreground font-medium font-sans">2</kbd>
+                </div>
               </Command.Item>
             </Command.Group>
 
@@ -88,20 +106,33 @@ export const CommandPalette = () => {
                   navigate('/');
                   setTimeout(() => window.dispatchEvent(new CustomEvent('openCreateIssue')), 100);
                 })}
-                className="flex items-center gap-2 px-2 py-3 rounded-lg cursor-pointer aria-selected:bg-accent aria-selected:text-accent-foreground"
+                className="flex items-center justify-between px-2 py-3 rounded-lg cursor-pointer aria-selected:bg-accent aria-selected:text-accent-foreground"
               >
-                <Plus className="w-4 h-4" />
-                <span>Crear Nueva Tarea (Issue)</span>
+                <div className="flex items-center gap-2">
+                  <Plus className="w-4 h-4" />
+                  <span>Crear Nueva Tarea (Issue)</span>
+                </div>
+                <div className="flex gap-1">
+                  <kbd className="bg-muted px-1.5 py-0.5 rounded text-[10px] text-muted-foreground font-medium font-sans">Alt</kbd>
+                  <kbd className="bg-muted px-1.5 py-0.5 rounded text-[10px] text-muted-foreground font-medium font-sans">C</kbd>
+                </div>
               </Command.Item>
               <Command.Item 
                 onSelect={() => runCommand(() => {
                   navigate('/epics');
                   setTimeout(() => window.dispatchEvent(new CustomEvent('openCreateEpic')), 100);
                 })}
-                className="flex items-center gap-2 px-2 py-3 rounded-lg cursor-pointer aria-selected:bg-accent aria-selected:text-accent-foreground"
+                className="flex items-center justify-between px-2 py-3 rounded-lg cursor-pointer aria-selected:bg-accent aria-selected:text-accent-foreground"
               >
-                <FilePlus className="w-4 h-4" />
-                <span>Crear Nueva Épica</span>
+                <div className="flex items-center gap-2">
+                  <FilePlus className="w-4 h-4" />
+                  <span>Crear Nueva Épica</span>
+                </div>
+                <div className="flex gap-1">
+                  <kbd className="bg-muted px-1.5 py-0.5 rounded text-[10px] text-muted-foreground font-medium font-sans">Alt</kbd>
+                  <kbd className="bg-muted px-1.5 py-0.5 rounded text-[10px] text-muted-foreground font-medium font-sans">Shift</kbd>
+                  <kbd className="bg-muted px-1.5 py-0.5 rounded text-[10px] text-muted-foreground font-medium font-sans">C</kbd>
+                </div>
               </Command.Item>
               <Command.Item 
                 onSelect={() => runCommand(() => toggleZenMode())}
@@ -111,7 +142,10 @@ export const CommandPalette = () => {
                   <MonitorOff className="w-4 h-4" />
                   <span>{isZenMode ? 'Desactivar Modo Zen' : 'Activar Modo Zen'}</span>
                 </div>
-                <span className="text-xs text-muted-foreground font-medium">Ctrl + .</span>
+                <div className="flex gap-1">
+                  <kbd className="bg-muted px-1.5 py-0.5 rounded text-[10px] text-muted-foreground font-medium font-sans">Ctrl</kbd>
+                  <kbd className="bg-muted px-1.5 py-0.5 rounded text-[10px] text-muted-foreground font-medium font-sans">.</kbd>
+                </div>
               </Command.Item>
             </Command.Group>
           </Command.List>

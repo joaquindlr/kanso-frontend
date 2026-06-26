@@ -8,8 +8,11 @@ import { useProjectStore } from "@/store/projectStore";
 import { useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { CommandPalette } from "./CommandPalette";
+import { useGlobalShortcuts } from "@/hooks/useGlobalShortcuts";
 
 export const MainLayout = () => {
+  useGlobalShortcuts();
+  
   const { isZenMode, toggleZenMode } = useZenModeStore();
   const { selectedProject } = useProjectStore();
   const location = useLocation();
