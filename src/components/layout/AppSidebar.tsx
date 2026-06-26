@@ -25,10 +25,10 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LayoutDashboard, Presentation, ChevronsUpDown, FolderGit2, LogOut, User2, Flag } from "lucide-react";
+import { LayoutDashboard, Presentation, FolderGit2, LogOut, User2, Flag } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { SidebarDropdownTrigger } from "./SidebarDropdownTrigger";
 
 export function AppSidebar() {
   const { user, logout } = useAuthStore();
@@ -54,23 +54,12 @@ export function AppSidebar() {
     <Sidebar collapsible="icon" className={cn("transition-all duration-300 ease-in-out z-50", isZenMode && "-translate-x-full opacity-0 pointer-events-none")}>
       <SidebarHeader>
         <DropdownMenu>
-          <DropdownMenuTrigger
-            render={
-              <SidebarMenuButton
-                size="lg"
-                className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-              />
-            }
-          >
-            <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              <FolderGit2 className="size-4" />
-            </div>
-            <div className="flex flex-col gap-0.5 leading-none group-data-[collapsible=icon]:hidden">
-              <span className="font-semibold truncate max-w-[120px]">{selectedProject ? selectedProject.name : "Proyectos"}</span>
-              <span className="text-xs text-muted-foreground">Mis Proyectos</span>
-            </div>
-            <ChevronsUpDown className="ml-auto size-4 group-data-[collapsible=icon]:hidden" />
-          </DropdownMenuTrigger>
+          <SidebarDropdownTrigger
+            icon={<FolderGit2 className="size-4" />}
+            iconBgClass="bg-primary text-primary-foreground"
+            title={selectedProject ? selectedProject.name : "Proyectos"}
+            subtitle="Mis Proyectos"
+          />
           <DropdownMenuContent
             className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
             align="start"
@@ -127,23 +116,12 @@ export function AppSidebar() {
 
       <SidebarFooter>
         <DropdownMenu>
-          <DropdownMenuTrigger
-            render={
-              <SidebarMenuButton
-                size="lg"
-                className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-              />
-            }
-          >
-            <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-muted">
-              <User2 className="size-4" />
-            </div>
-            <div className="flex flex-col gap-0.5 leading-none group-data-[collapsible=icon]:hidden">
-              <span className="font-semibold">{user?.email?.split('@')[0] || "Usuario"}</span>
-              <span className="text-xs text-muted-foreground">{user?.email || "usuario@ejemplo.com"}</span>
-            </div>
-            <ChevronsUpDown className="ml-auto size-4 group-data-[collapsible=icon]:hidden" />
-          </DropdownMenuTrigger>
+          <SidebarDropdownTrigger
+            icon={<User2 className="size-4" />}
+            iconBgClass="bg-muted"
+            title={user?.email?.split('@')[0] || "Usuario"}
+            subtitle={user?.email || "usuario@ejemplo.com"}
+          />
           <DropdownMenuContent
             className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
             side={isMobile ? "bottom" : "right"}

@@ -49,6 +49,7 @@ import { useUpdateIssue } from "@/hooks/useIssues";
 import { useComments, useCreateComment } from "@/hooks/useComments";
 import { useAuthStore } from "@/store/authStore";
 import { cn } from "@/lib/utils";
+import { FormField } from "@/components/ui/form-field";
 
 interface IssueDetailDrawerProps {
   issue: Issue | null;
@@ -300,10 +301,7 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
           </div>
 
           <div className="grid grid-cols-2 gap-y-6 gap-x-8 p-4 bg-muted/30 rounded-lg border border-border">
-            <div className="flex flex-col gap-2">
-              <span className="text-muted-foreground text-xs font-medium uppercase tracking-wider">
-                Épica
-              </span>
+            <FormField label="Épica">
               <Popover open={epicOpen} onOpenChange={setEpicOpen}>
                 <PopoverTrigger asChild>
                   <Button
@@ -375,12 +373,9 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
                   </Command>
                 </PopoverContent>
               </Popover>
-            </div>
+            </FormField>
 
-            <div className="flex flex-col gap-2">
-              <span className="text-muted-foreground text-xs font-medium uppercase tracking-wider">
-                {safeIssue.type === "STORY" ? "Prioridad" : "Severidad"}
-              </span>
+            <FormField label={safeIssue.type === "STORY" ? "Prioridad" : "Severidad"}>
               <Select
                 value={safeIssue.severity}
                 onValueChange={handlePriorityChange}
@@ -416,7 +411,7 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
                   })}
                 </SelectContent>
               </Select>
-            </div>
+            </FormField>
           </div>
 
           <div className="flex flex-col gap-2">
