@@ -7,6 +7,7 @@ import { useZenModeStore } from "@/store/zenModeStore";
 import { useProjectStore } from "@/store/projectStore";
 import { useEffect } from "react";
 import { cn } from "@/lib/utils";
+import { CommandPalette } from "./CommandPalette";
 
 export const MainLayout = () => {
   const { isZenMode, toggleZenMode } = useZenModeStore();
@@ -27,6 +28,7 @@ export const MainLayout = () => {
 
   return (
     <TooltipProvider>
+      <CommandPalette />
       <SidebarProvider
         style={
           {
