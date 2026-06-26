@@ -31,6 +31,17 @@ export const BoardColumn: React.FC<BoardColumnProps> = ({ id, title, issues, dot
     }
   }, [isCreating]);
 
+  useEffect(() => {
+    if (id !== 'NEW') return;
+
+    const handleOpenCreateIssue = () => {
+      setIsCreating(true);
+    };
+
+    window.addEventListener('openCreateIssue', handleOpenCreateIssue);
+    return () => window.removeEventListener('openCreateIssue', handleOpenCreateIssue);
+  }, [id]);
+
   const handleCreate = () => {
     if (newTitle.trim()) {
       onCreateIssue?.(newTitle.trim(), newDescription.trim() || undefined);

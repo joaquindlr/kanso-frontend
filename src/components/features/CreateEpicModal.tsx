@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -20,6 +20,15 @@ export function CreateEpicModal() {
   const [description, setDescription] = useState('');
   const { selectedProject } = useProjectStore();
   const createEpic = useCreateEpic(selectedProject?.id || '');
+
+  useEffect(() => {
+    const handleOpenCreateEpic = () => {
+      setOpen(true);
+    };
+
+    window.addEventListener('openCreateEpic', handleOpenCreateEpic);
+    return () => window.removeEventListener('openCreateEpic', handleOpenCreateEpic);
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
