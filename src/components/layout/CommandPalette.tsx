@@ -3,6 +3,7 @@ import { Command } from 'cmdk';
 import { useNavigate } from 'react-router-dom';
 import { Kanban, PenTool, LayoutList, Plus, FilePlus, MonitorOff } from 'lucide-react';
 import { useZenModeStore } from '@/store/zenModeStore';
+import { getNavbarRoutes } from '@/config/routes';
 
 const ShortcutKey = ({ keys }: { keys: string[] }) => (
   <div className="flex gap-1">
@@ -87,24 +88,18 @@ export const CommandPalette = () => {
             </Command.Empty>
 
             <Command.Group heading={<div className="px-2 py-1.5 text-xs font-medium text-muted-foreground">Navegación</div>}>
-              <PaletteItem
-                icon={<Kanban className="w-4 h-4" />}
-                label="Ir al Tablero Kanban"
-                shortcuts={['Alt', '1']}
-                onSelect={() => runCommand(() => navigate('/'))}
-              />
-              <PaletteItem
-                icon={<PenTool className="w-4 h-4" />}
-                label="Ir a la Pizarra (Excalidraw)"
-                shortcuts={['Alt', '3']}
-                onSelect={() => runCommand(() => navigate('/whiteboard'))}
-              />
-              <PaletteItem
-                icon={<LayoutList className="w-4 h-4" />}
-                label="Ver Épicas"
-                shortcuts={['Alt', '2']}
-                onSelect={() => runCommand(() => navigate('/epics'))}
-              />
+              {getNavbarRoutes().map((route, index) => {
+                const Icon = route.navbarConfig!.icon;
+                return (
+                  <PaletteItem
+                    key={route.path}
+                    icon={<Icon className="w-4 h-4" />}
+                    label={`Ir a ${route.navbarConfig!.name}`}
+                    shortcuts={['Alt', String(index + 1)]}
+                    onSelect={() => runCommand(() => navigate(route.path))}
+                  />
+                );
+              })}
             </Command.Group>
 
             <div className="h-px bg-border my-2" />

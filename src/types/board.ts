@@ -1,6 +1,6 @@
 export type IssueType = 'STORY' | 'BUG';
 export type IssueSeverity = 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
-export type IssueStatus = 'NEW' | 'IN_PROGRESS' | 'DONE' | 'DEPLOYED';
+export type IssueStatus = 'ICEBOX' | 'NEW' | 'IN_PROGRESS' | 'DONE' | 'DEPLOYED' | 'CLOSED';
 
 export interface User {
   id: string;

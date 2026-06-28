@@ -4,6 +4,7 @@ import { useAuthStore } from "@/store/authStore";
 import { useProjectStore } from "@/store/projectStore";
 import { useZenModeStore } from "@/store/zenModeStore";
 import { useProjects } from "@/hooks/useProjects";
+import { getNavbarRoutes } from "@/config/routes";
 import {
   Sidebar,
   SidebarContent,
@@ -26,7 +27,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { LayoutDashboard, Presentation, FolderGit2, LogOut, User2, Flag } from "lucide-react";
+import { LayoutDashboard, Presentation, FolderGit2, LogOut, User2, Flag, ListTodo } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SidebarDropdownTrigger } from "./SidebarDropdownTrigger";
 
@@ -37,18 +38,13 @@ export function AppSidebar() {
   const { data: projects = [] } = useProjects();
   const { selectedProject, setSelectedProject } = useProjectStore();
   const { isZenMode } = useZenModeStore();
+  const navigation = getNavbarRoutes();
 
   useEffect(() => {
     if (!selectedProject && projects.length > 0) {
       setSelectedProject(projects[0]);
     }
   }, [projects, selectedProject, setSelectedProject]);
-
-  const navigation = [
-    { name: "Tablero", href: "/", icon: LayoutDashboard },
-    { name: "Epicas", href: "/epics", icon: Flag },
-    { name: "Pizarra", href: "/whiteboard", icon: Presentation },
-  ];
 
   return (
     <Sidebar collapsible="icon" className={cn("transition-all duration-300 ease-in-out z-50", isZenMode && "-translate-x-full opacity-0 pointer-events-none")}>
@@ -94,19 +90,23 @@ export function AppSidebar() {
           <SidebarGroupLabel>Navegación</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {navigation.map((item) => (
-                <SidebarMenuItem key={item.name}>
+              {navigation.map((item) => {
+                const Icon = item.navbarConfig!.icon;
+                const name = item.navbarConfig!.name;
+                return (
+                <SidebarMenuItem key={name}>
                   <SidebarMenuButton 
-                    render={<Link to={item.href} />} 
-                    isActive={location.pathname === item.href} 
-                    tooltip={item.name}
+                    render={<Link to={item.path} />} 
+                    isActive={location.pathname === item.path} 
+                    tooltip={name}
                     className="h-10 text-base [&>svg]:size-5"
                   >
-                    <item.icon />
-                    <span className="group-data-[collapsible=icon]:hidden">{item.name}</span>
+                    <Icon />
+                    <span className="group-data-[collapsible=icon]:hidden">{name}</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
-              ))}
+                );
+              })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

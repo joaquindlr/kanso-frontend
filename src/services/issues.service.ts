@@ -5,6 +5,7 @@ export interface CreateStoryPayload {
   title: string;
   detail?: string;
   epicId?: string;
+  status?: string;
 }
 
 export interface MoveIssuePayload {

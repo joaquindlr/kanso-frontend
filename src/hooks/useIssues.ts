@@ -35,7 +35,7 @@ export const useUpdateIssue = () => {
   return useMutation({
     mutationFn: ({ issueId, payload }: { issueId: string; payload: UpdateIssuePayload }) =>
       issuesService.updateIssue(issueId, payload),
-    onSuccess: (updatedIssue) => {
+    onSuccess: () => {
       // Invalidate queries so the board and list refresh
       queryClient.invalidateQueries({ queryKey: ['issues'] });
     },
