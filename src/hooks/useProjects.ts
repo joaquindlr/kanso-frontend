@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { projectsService, type CreateProjectPayload } from '../services/projects.service';
-import type { ExcalidrawInitialDataState } from "@excalidraw/excalidraw";
+import type { ExcalidrawInitialDataState } from "@/types/excalidraw";
 
 export const useProjects = () => {
   return useQuery({

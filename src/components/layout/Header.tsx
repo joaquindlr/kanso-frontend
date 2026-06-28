@@ -29,11 +29,11 @@ export const Header = () => {
 
       <div className="flex items-center gap-4 ml-auto">
         <Tooltip>
-          <TooltipTrigger asChild>
+          <TooltipTrigger render={
             <Button variant="ghost" size="icon" onClick={toggleZenMode}>
               <Monitor className="h-5 w-5 text-muted-foreground" />
             </Button>
-          </TooltipTrigger>
+          } />
           <TooltipContent>
             <p>Modo Zen (Cmd + \ o Ctrl + .)</p>
           </TooltipContent>

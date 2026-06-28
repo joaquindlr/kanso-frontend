@@ -1,9 +1,5 @@
-import {
-  Excalidraw,
-  type ExcalidrawInitialDataState,
-  type ExcalidrawElement,
-  type AppState,
-} from "@excalidraw/excalidraw";
+import { Excalidraw } from "@excalidraw/excalidraw";
+import type { ExcalidrawInitialDataState, ExcalidrawElement, AppState } from "@/types/excalidraw";
 import { useRef, useEffect } from "react";
 import { useUpdateProjectWhiteboard } from "@/hooks/useProjects";
 import "@excalidraw/excalidraw/index.css";

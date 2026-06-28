@@ -1,5 +1,5 @@
 import { api } from './api';
-import type { ExcalidrawInitialDataState } from "@excalidraw/excalidraw";
+import type { ExcalidrawInitialDataState } from "@/types/excalidraw";
 
 export interface CreateProjectPayload {
   name: string;

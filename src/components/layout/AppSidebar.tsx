@@ -27,7 +27,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { LayoutDashboard, Presentation, FolderGit2, LogOut, User2, Flag, ListTodo } from "lucide-react";
+import { FolderGit2, LogOut, User2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SidebarDropdownTrigger } from "./SidebarDropdownTrigger";
 

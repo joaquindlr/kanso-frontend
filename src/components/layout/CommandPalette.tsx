@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Command } from 'cmdk';
 import { useNavigate } from 'react-router-dom';
-import { Kanban, PenTool, LayoutList, Plus, FilePlus, MonitorOff } from 'lucide-react';
+import { Plus, FilePlus, MonitorOff } from 'lucide-react';
 import { useZenModeStore } from '@/store/zenModeStore';
 import { getNavbarRoutes } from '@/config/routes';
 
@@ -93,7 +93,7 @@ export const CommandPalette = () => {
                 return (
                   <PaletteItem
                     key={route.path}
-                    icon={<Icon className="w-4 h-4" />}
+                    icon={<span className="flex items-center justify-center [&>svg]:size-4"><Icon /></span>}
                     label={`Ir a ${route.navbarConfig!.name}`}
                     shortcuts={['Alt', String(index + 1)]}
                     onSelect={() => runCommand(() => navigate(route.path))}

@@ -222,7 +222,7 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
           </div>
           <div className="flex items-center gap-1 text-muted-foreground">
             <DropdownMenu>
-              <DropdownMenuTrigger asChild>
+              <DropdownMenuTrigger render={
                 <Button
                   variant="ghost"
                   size="icon"
@@ -230,7 +230,7 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
                 >
                   <MoreHorizontal className="w-5 h-5" />
                 </Button>
-              </DropdownMenuTrigger>
+              } />
               <DropdownMenuContent align="end" className="w-48">
                 <DropdownMenuItem>Copiar enlace al portapapeles</DropdownMenuItem>
                 <DropdownMenuItem>Mandar arriba</DropdownMenuItem>
@@ -259,7 +259,7 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
           <div className="flex flex-col gap-3">
             <div className="w-fit self-start">
               <DropdownMenu>
-                <DropdownMenuTrigger asChild>
+                <DropdownMenuTrigger render={
                   <div 
                     className="inline-flex items-center gap-2 px-2 py-1 -ml-2 rounded-md hover:bg-muted/50 cursor-pointer transition-colors group"
                     onClick={(e) => e.stopPropagation()}
@@ -274,7 +274,7 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
                     </span>
                     <ChevronDown className="w-3 h-3 text-muted-foreground opacity-50 group-hover:opacity-100 transition-opacity" />
                   </div>
-                </DropdownMenuTrigger>
+                } />
                 <DropdownMenuContent align="start" className="w-40">
                   <DropdownMenuItem 
                     onClick={() => updateIssueMutation.mutate({ issueId: safeIssue.id, payload: { type: 'STORY' } })}
@@ -303,7 +303,7 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
           <div className="grid grid-cols-2 gap-y-6 gap-x-8 p-4 bg-muted/30 rounded-lg border border-border">
             <FormField label="Épica">
               <Popover open={epicOpen} onOpenChange={setEpicOpen}>
-                <PopoverTrigger asChild>
+                <PopoverTrigger render={
                   <Button
                     variant="outline"
                     role="combobox"
@@ -327,7 +327,7 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
                     )}
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                   </Button>
-                </PopoverTrigger>
+                } />
                 <PopoverContent className="w-[300px] p-0" align="start">
                   <Command>
                     <CommandInput placeholder="Buscar épica..." />
