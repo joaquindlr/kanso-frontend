@@ -1,5 +1,5 @@
 import { Excalidraw } from "@excalidraw/excalidraw";
-import type { ExcalidrawInitialDataState, ExcalidrawElement, AppState } from "@/types/excalidraw";
+import type { ExcalidrawInitialDataState, ExcalidrawElement, AppState, BinaryFiles } from "@/types/excalidraw";
 import { useRef, useEffect } from "react";
 import { useUpdateProjectWhiteboard } from "@/hooks/useProjects";
 import "@excalidraw/excalidraw/index.css";
@@ -30,6 +30,7 @@ export const ProjectWhiteboard = ({
   const handleChange = (
     elements: readonly ExcalidrawElement[],
     appState: AppState,
+    files: BinaryFiles
   ) => {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
@@ -42,6 +43,7 @@ export const ProjectWhiteboard = ({
           viewBackgroundColor: appState.viewBackgroundColor,
           currentItemFontFamily: appState.currentItemFontFamily,
         },
+        files,
       };
 
       const stringifiedData = JSON.stringify(dataToSave);
